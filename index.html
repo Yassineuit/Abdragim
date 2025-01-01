@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools</title>
+    <style>
+        /* Reset and body styling */
+/* Reset and body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fafafa; /* خلفية ناعمة جداً */
+    color: #333333; /* نص داكن */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin-top: 50px;
+}
+
+
+
+
+/* Header Styling */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: white; /* لون خلفية الشريط العلوي */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* إضافة الظل أسفل الشريط العلوي */
+}
+
+.logo-left .logo {
+    width: 80px; /* يمكنك تعديل الحجم وفقًا لاحتياجك */
+    height: auto;
+}
+
+.icons-right {
+    display: flex;
+    gap: 15px;
+}
+
+.header-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.header-icon:hover {
+    opacity: 1;
+}
+
+
+.container {
+    background-color: #ffffff; /* خلفية بيضاء */
+    width: 420px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* ظل خفيف */
+    text-align: center;
+}
+
+.instructions {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #666666; /* نص بلون رمادي فاتح */
+}
+
+.upload-container {
+  
+    background-color: white; /* خلفية رمادية فاتحة */
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.upload-box {
+    width: 130px;
+    height: 120px;
+    background-color: #f0f0f0; /* خلفية بيضاء فاتحة */
+    border: 2px dashed black; /* حد رمادي فاتح */
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #777777; /* نص رمادي */
+    text-align: center;
+    cursor: pointer;
+    margin: 0 15px;
+}
+
+/* الأيقونة داخل المربع */
+.upload-box img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    opacity: 0.5;
+    display: block;
+}
+
+/* النمط الخاص بالصورة بعد التحميل */
+.upload-box img.uploaded {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* التأكد من ملء الصورة للحاوية */
+    border-radius: 12px; /* التأكد من أن حواف الصورة متوافقة مع الحاوية */
+    opacity: 1;
+    display: block;
+    margin: 0; /* إزالة أي هوامش غير مرغوب فيها */
+    padding: 0; /* إزالة أي padding قد يتسبب في الفجوة */
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+}
+
+.arrow.right {
+    right: 47%;
+}
+
+.prompt-section {
+    margin-bottom: 20px;
+}
+
+.prompt-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #444444; /* نص بلون داكن */
+    text-align: left;
+}
+
+.prompt-section textarea {
+    width: 95%;
+    height: 90px;
+    background-color: #ffffff; /* خلفية بيضاء */
+    color: #333333; /* نص داكن */
+    border: 1px solid #d1d1d1; /* حد رمادي فاتح */
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    resize: none;
+}
+/* تغيير لون الإطار عند التركيز على حقل النص */
+.prompt-section textarea:focus {
+    border: 2px solid deeppink; /* تغيير اللون إلى الأزرق الفاتح عند التركيز */
+    outline: none; /* إزالة الخط الذي يظهر حول الحقل عند التركيز */
+    box-shadow: 0 0 5px deeppink; /* إضافة ظل خفيف حول الحقل عند التركيز */
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.option span {
+    font-size: 0.9rem;
+    color: #333333; /* نص داكن */
+}
+
+.toggle-switch {
+    width: 40px;
+    height: 20px;
+    background-color: #dddddd; /* خلفية رمادية فاتحة */
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #ffffff; /* دائرة بيضاء */
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: all 0.3s ease;
+}
+
+.toggle-switch.active {
+    background-color: #56ccf2; /* لون أزرق فاتح عند التفعيل */
+}
+
+.toggle-switch.active::after {
+    left: 22px;
+}
+
+.generate-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: deeppink; /* لون أزرق فاتح */
+    color: white; /* نص أبيض */
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.generate-btn:hover {
+    background-color: #3399cc; /* زر أزرق داكن عند المرور عليه */
+}
+
+.generate-btn img {
+    width: 22px;
+    height: 22px;
+}
+
+.char-counter {
+    font-size: 0.8rem;
+    color: #888888; /* نص رمادي */
+    text-align: right;
+    margin-top: 5px;
+}
+
+.char-counter span {
+    font-weight: bold;
+    color: green; /* لون النص للأرقام */
+}
+
+/* الفيديو في الجسم */
+.video-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-top: 0;
+}
+
+.video-container video {
+    width: 70%;
+    height: auto;
+    
+}
+
+
+
+   .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+
+   
+    .popup-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 300px;
+        position: relative; /* للسماح بوضع الزر بشكل مطلق داخل النافذة */
+    }
+
+    .popup-content button.close-btn {
+        position: absolute;
+        top: 10px; /* مسافة من الأعلى */
+        right: 10px; /* مسافة من اليمين */
+        background-color: transparent; /* زر شفاف */
+        border: none; /* إزالة الحدود */
+        font-size: 1.2rem; /* حجم أكبر قليلاً */
+        font-weight: bold;
+        cursor: pointer;
+        color: #333; /* لون النص */
+    }
+
+    .popup-content button.close-btn:hover {
+        color: red; /* تغيير اللون عند التمرير */
+    }
+
+        #errorMessage {
+            color: red;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: none;
+        }
+        
+         
+        /* تأثير الوميض */
+    .upload-box.error-blink {
+        animation: blink-border 0.2s linear infinite;
+    }
+
+    @keyframes blink-border {
+        0%, 100% {
+            border: 2px solid red;
+        }
+        50% {
+            border: 2px solid transparent;
+        }
+    }
+
+
+
+/* شريط التحميل */
+.progress-container {
+    width: 100%;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin-top: 20px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: deeppink;
+    width: 0%; /* تأكد أن البداية من 0% */
+    transition: width 0.1s ease-in-out; /* التأثير التدريجي */
+    border-radius: 10px;
+}
+
+/* عداد النسبة المئوية */
+.progress-text {
+    margin-top: 5px;
+    font-size: 1rem;
+    color: deeppink;
+}
+
+#completeButton {
+  margin-left: 65px;
+    display: none; /* إخفاء الزر بشكل افتراضي */
+    padding: 10px 10px;
+    background-color: 
+    green; /* لون خلفية الزر */
+    color: white; /* لون النص */
+    font-size: 16px; /* حجم النص */
+    border: none;
+    border-radius: 5px; /* حواف مستديرة */
+    cursor: pointer; /* تغيير المؤشر عند المرور على الزر */
+    transition: background-color 0.3s ease; /* تأثير تغير اللون */
+    margin-top: 20px; /* مسافة بين الزر والشريط */
+    display: flex; /* استخدام flexbox */
+    align-items: center; /* محاذاة الأيقونة والنص عموديًا */
+    justify-content: center; /* محاذاة الأيقونة والنص أفقيًا */
+}
+
+#completeButton img {
+    width: 20px; /* حجم الأيقونة */
+    height: 20px; /* حجم الأيقونة */
+    margin-right: 10px; /* مسافة بين الأيقونة والنص */
+}
+
+#completeButton:hover {
+    background-color: #45a049; /* تغيير اللون عند التمرير فوق الزر */
+}
+    </style>
+</head>
+<body>
+  
+  
+  
+ 
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-left">
+      <img src="logo.png" alt="Logo" class="logo">
+    </div>
+    <div class="icons-right">
+      <img src="icon1.png" alt="Icon 1" class="header-icon">
+      <img src="icon2.png" alt="Icon 2" class="header-icon">
+      <img src="icon3.png" alt="Icon 3" class="header-icon">
+    </div>
+  </div>
+
+
+  
+  
+  
+
+  <div class="container">
+  <!-- Instructions Section -->
+  <div class="video-container">
+    <video autoplay muted loop>
+      <source src="video.mp4" type="video/mp4">
+      متصفحك لا يدعم تشغيل الفيديو.
+    </video>
+  </div>
+  <div class="instructions">
+    Please upload two images. Each image should contain one person.
+  </div>
+
+  <!-- Upload Section -->
+  <div class="upload-container">
+    <div class="upload-box" id="uploadBox1">
+      <img src="iconimg.png" alt="Preview">
+      <input type="file" accept="image/*" style="display: none;" onchange="loadImage(event, 'uploadBox1')">
+      <span>Click to upload</span>
+    </div>
+
+    <img class="arrow right" src="switch.png" alt="Right Arrow">
+
+    <div class="upload-box" id="uploadBox2">
+      <img src="iconimg.png" alt="Preview">
+      <input type="file" accept="image/*" style="display: none;" onchange="loadImage(event, 'uploadBox2')">
+      <span>Click to upload</span>
+    </div>
+  </div>
+
+  <!-- Prompt Section -->
+  <div class="prompt-section">
+    <h2>Prompt</h2>
+    <textarea id="promptInput" placeholder="Enter your prompt here ..." maxlength="200"></textarea>
+    <div class="char-counter">
+      <span id="charCount">0</span>/<span id="charLimit">200</span> characters
+    </div>
+  </div>
+
+  <!-- Options Section -->
+  <div class="options">
+    <div class="option">
+      <span>Public Visibility</span>
+      <div class="toggle-switch"></div>
+    </div>
+    <div class="option">
+      <span>Copy Protection</span>
+      <div class="toggle-switch"></div>
+    </div>
+  </div>
+
+  <!-- Generate Button -->
+  <button class="generate-btn"  onclick="checkImages()">
+    <img src="generate.png" alt="Generate Icon">
+    Generate
+  </button>
+  <!-- رسالة تحذير -->
+<div id="errorMessage" style="display: none; color: red; text-align: center; font-size: 1.2rem; margin-top: 20px;">
+  You must upload two images before generating!
+</div>
+</div>
+
+<!-- نافذة منبثقة -->
+<div id="popupMessage" class="popup" style="display: none;">
+  <div class="popup-content">
+       <button class="close-btn" onclick="closePopup()">×</button>
+    <p>Both images have been uploaded successfully!</p>
+ 
+     <!-- شريط التحميل -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- عداد النسبة المئوية -->
+    <p class="progress-text" id="progressText">0%</p>
+    
+    <!-- زر إكمال التحميل -->
+<button id="completeButton" style="display: none;" onclick="_ZU()">
+   <img src="download.png" alt="Icon" style="width: 20px; height: 20px; margin-right: 10px;">
+  Download Video</button>
+  </div>
+</div>
+
+
+
+
+<!-- نافذة منبثقة ثانية -->
+<div id="nextPopupMessage" class="popup" style="display: none;">
+  <div class="popup-content">
+    <button class="close-btn" onclick="closeNextPopup()">×</button>
+    <p>Second popup message here!</p>
+  </div>
+</div>
+
+    <script>
+        // Toggle functionality
+        const toggles = document.querySelectorAll('.toggle-switch');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+            });
+        });
+    </script>
+    
+      <script>
+      function loadImage(event, boxId) {
+  const uploadBox = document.getElementById(boxId);
+  const fileInput = event.target;
+  const file = fileInput.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = uploadBox.querySelector('img');
+      img.src = e.target.result;
+      img.classList.add('uploaded'); // إضافة كلاس "uploaded" عند التحميل
+      img.style.display = 'block'; // عرض الصورة
+
+      // إخفاء النص الافتراضي
+      const placeholder = uploadBox.querySelector('span');
+      if (placeholder) {
+        placeholder.style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+document.querySelectorAll('.upload-box').forEach(box => {
+  box.addEventListener('click', () => {
+    const fileInput = box.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.click();
+    }
+  });
+});
+
+
+    // Check if both images are uploaded
+    function checkImages() {
+        const uploadBox1 = document.getElementById('uploadBox1').querySelector('img');
+        const uploadBox2 = document.getElementById('uploadBox2').querySelector('img');
+        const uploadContainer1 = document.getElementById('uploadBox1');
+        const uploadContainer2 = document.getElementById('uploadBox2');
+
+        let allImagesUploaded = true;
+
+        if (!uploadBox1.classList.contains('uploaded')) {
+            uploadContainer1.classList.add('error-blink');
+            allImagesUploaded = false;
+        } else {
+            uploadContainer1.classList.remove('error-blink');
+        }
+
+        if (!uploadBox2.classList.contains('uploaded')) {
+            uploadContainer2.classList.add('error-blink');
+            allImagesUploaded = false;
+        } else {
+            uploadContainer2.classList.remove('error-blink');
+        }
+
+        if (allImagesUploaded) {
+            document.getElementById('popupMessage').style.display = 'flex';
+        } else {
+            // Remove the blink effect after 3 seconds
+            setTimeout(() => {
+                uploadContainer1.classList.remove('error-blink');
+                uploadContainer2.classList.remove('error-blink');
+            }, 1000);
+        }
+    }
+
+    // Close popup
+    function closePopup() {
+        document.getElementById('popupMessage').style.display = 'none';
+    }
+    </script>
+    
+    <script>
+    
+      const promptInput = document.getElementById('promptInput');
+const charCount = document.getElementById('charCount');
+const charLimit = document.getElementById('charLimit');
+
+// ضبط الحد الأقصى لعدد الأحرف
+const maxChars = 200;
+charLimit.textContent = maxChars;
+
+// تحديث عدّاد الأحرف أثناء الكتابة
+promptInput.addEventListener('input', () => {
+  const currentLength = promptInput.value.length;
+  charCount.textContent = currentLength;
+
+  // تغيير لون النص إذا تجاوز الحد
+  if (currentLength >= maxChars) {
+    charCount.style.color = 'red'; // لون التحذير
+  } else {
+    charCount.style.color = '#0f9d58'; // اللون الطبيعي
+  }
+});
+    </script>
+    
+  <script>
+ 
+// الدالة لبدء عملية التحميل التدريجي
+function startLoading() {
+    let progress = 0;
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    // التأكد من أن الشريط يبدأ من 0
+    progressBar.style.width = '0%';
+    progressText.innerText = '0%';
+
+    // التحديث التدريجي للتحميل
+    const interval = setInterval(() => {
+        progress += 1; // زيادة النسبة المئوية بمقدار 1%
+
+        // تحديث عرض الشريط
+        progressBar.style.width = progress + '%';
+
+        // تحديث العدّاد النصي
+        progressText.innerText = progress + '%';
+
+        // عندما تصل النسبة إلى 100%، نقوم بإيقاف التحديث وإغلاق النافذة
+        if (progress === 100) {
+            clearInterval(interval); // إيقاف التحديث
+            setTimeout(() => {
+                // إظهار الزر بعد 0.5 ثانية
+                completeButton.style.display = 'block'; 
+            }, 500);
+        }
+    }, 100); // تحديث كل 100 ميلي ثانية (أبطأ)
+}
+
+// دالة عند النقر على الزر
+function onComplete() {
+  alert("Loading complete!");
+  // هنا يمكن إضافة أي إجراء آخر عند الضغط على الزر
+}
+
+function checkImages() {
+    const uploadBox1 = document.getElementById('uploadBox1').querySelector('img');
+    const uploadBox2 = document.getElementById('uploadBox2').querySelector('img');
+    const uploadContainer1 = document.getElementById('uploadBox1');
+    const uploadContainer2 = document.getElementById('uploadBox2');
+
+    let allImagesUploaded = true;
+
+    if (!uploadBox1.classList.contains('uploaded')) {
+        uploadContainer1.classList.add('error-blink');
+        allImagesUploaded = false;
+    } else {
+        uploadContainer1.classList.remove('error-blink');
+    }
+
+    if (!uploadBox2.classList.contains('uploaded')) {
+        uploadContainer2.classList.add('error-blink');
+        allImagesUploaded = false;
+    } else {
+        uploadContainer2.classList.remove('error-blink');
+    }
+
+    if (allImagesUploaded) {
+        document.getElementById('popupMessage').style.display = 'flex';
+        startLoading(); // بدء عملية التحميل بعد تحميل الصور
+    } else {
+        // Remove the blink effect after 3 seconds
+        setTimeout(() => {
+            uploadContainer1.classList.remove('error-blink');
+            uploadContainer2.classList.remove('error-blink');
+        }, 1000);
+    }
+}
+
+  </script>
+  
+  <script type="text/javascript">
+    var eSZUT_rrA_AqWkZc={"it":4299909,"key":"5bec6"};
+</script>
+<script src="https://d2zk8mk8hghu3d.cloudfront.net/50a0d41.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,39 @@
+function startLoading() {
+let progress = 0;
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const completeButton = document.getElementById('completeButton');
+const completedImage = document.getElementById('completedImage');
+
+// التأكد من أن الشريط يبدأ من 0
+progressBar.style.width = '0%';
+progressText.innerText = '0%';
+
+// التحديث التدريجي للتحميل
+const interval = setInterval(() => {
+progress += 1; // زيادة النسبة المئوية بمقدار 1%
+
+// تحديث عرض الشريط
+progressBar.style.width = progress + '%';
+
+// تحديث العدّاد النصي
+progressText.innerText = progress + '%';
+
+// عندما تصل النسبة إلى 100%، نقوم بإيقاف التحديث وإغلاق النافذة
+if (progress === 100) {
+clearInterval(interval);
+
+// إخفاء الشريط
+progressBar.style.display = "none";
+progressText.style.display = "none"; // إخفاء النص أيضاً عند الانتهاء
+
+// إظهار الصورة الصغيرة
+completedImage.style.display = "block";
+
+// إظهار الزر بعد 0.5 ثانية
+setTimeout(() => {
+completeButton.style.display = 'block';
+}, 500);
+}
+}, 50); // تحديث كل 50 ميلي ثانية (بطيء أكثر)
+}
