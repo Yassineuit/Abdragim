@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undress nees - Smart Video Creation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        header .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        header .icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        header .icons i {
+            font-size: 20px;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        header .icons i:hover {
+            color: #007bff;
+        }
+
+        /* Container */
+        .container {
+            background-color: #fff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .upload-section {
+            margin-bottom: 25px;
+        }
+
+        .upload-box {
+            border: 2px dashed #007bff;
+            border-radius: 12px;
+            padding: 30px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .upload-box:hover {
+            background-color: #e6f0ff;
+            border-color: #0056b3;
+        }
+
+        .upload-box i {
+            font-size: 40px;
+            color: #007bff;
+        }
+
+        .upload-box p {
+            font-size: 16px;
+            color: #555;
+            margin: 0;
+        }
+
+        .upload-box.hidden {
+            display: none;
+        }
+
+        .image-preview {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 150px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border: 2px dashed #007bff;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-button:hover {
+            background-color: rgba(255, 0, 0, 1);
+        }
+
+        .settings {
+            margin-top: 25px;
+        }
+
+        .settings label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 16px;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+            resize: none;
+            overflow-y: auto;
+            min-height: 100px;
+            max-height: 200px;
+        }
+
+        .input-group textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .input-group textarea::placeholder {
+            color: #999;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .char-count.limit-exceeded {
+            color: red;
+        }
+
+        .select-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .choices {
+            width: 100%;
+        }
+
+        .choices__inner {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            padding: 8px;
+            min-height: auto;
+        }
+
+        .choices__list--single {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .choices__list--dropdown .choices__item--selectable,
+        .choices__list[aria-expanded] .choices__item--selectable {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+        }
+
+        .choices__list--dropdown .choices__item--selectable i,
+        .choices__list[aria-expanded] .choices__item--selectable i {
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        .choices__list--dropdown .choices__item--selectable:hover,
+        .choices__list[aria-expanded] .choices__item--selectable:hover {
+            background-color: #e6f0ff;
+        }
+
+        .choices__list--dropdown .choices__item--selectable.is-highlighted,
+        .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .choices__list--dropdown .choices__item--selectable.is-highlighted i,
+        .choices__list[aria-expanded] .choices__item--selectable.is-highlighted i {
+            color: #fff;
+        }
+
+        .generate-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #28a745;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.5; /* باهت */
+            pointer-events: none; /* غير نشط */
+        }
+
+        .generate-button.active {
+            opacity: 1; /* لون غامق */
+            pointer-events: auto; /* نشط */
+        }
+
+        .generate-button:hover {
+            background-color: #218838;
+        }
+
+        .generate-button i {
+            font-size: 18px;
+        }
+
+        /* Popup Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px); /* إضافة تأثير الضبابية */
+            -webkit-backdrop-filter: blur(5px); /* لدعم Safari والإصدارات القديمة من Chrome */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* إضافة ظل للنافذة */
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Video Container */
+        .video-container {
+            width: 250px;
+            height: 250px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9;
+        }
+
+        .video-container img {
+          filter: blur(45px);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Initially hidden */
+        }
+
+        /* Buttons Overlay */
+        .buttons-overlay {
+          width: 195px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1;
+        }
+
+        .buttons-overlay button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .buttons-overlay button.download {
+            background-color: green;
+            color: #fff;
+        }
+
+        .buttons-overlay button.download:hover {
+            background-color: #0056b3;
+        }
+
+        .buttons-overlay button.watch {
+            background-color: green;
+            color: #fff;
+        }
+
+        .buttons-overlay button.watch:hover {
+            background-color: #218838;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 80%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            position: absolute;
+            bottom: 20px;
+            display: none; /* Initially hidden */
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 5px;
+            transition: width 0.1s linear;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #333;
+            position: absolute;
+            bottom: 40px;
+            display: none; /* Initially hidden */
+        }
+
+        /* Blinking Effect */
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .video-container.blink {
+            animation: blink 1s infinite;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: none; /* Initially hidden */
+            gap: 10px; 
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-button.download {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .modal-button.download:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-button.watch {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .modal-button.watch:hover {
+            background-color: #218838;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background-color: rgba(255, 0, 0, 1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .upload-box p {
+                font-size: 14px;
+            }
+
+            .generate-button {
+                font-size: 14px;
+            }
+
+            .select-group {
+                flex-direction: column;
+            }
+        }
+
+        .button-thumbnail {
+            width: 24px; /* حجم الصورة المصغرة */
+            height: 24px;
+            border-radius: 50%; /* لجعلها دائرية */
+            object-fit: cover; /* لتجنب تشويه الصورة */
+            margin-right: 8px; /* مسافة بين الصورة والنص */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">UndressAI</div>
+        <div class="icons">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-user"></i>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="upload-section">
+            <div class="upload-box" id="uploadBox">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click or drag an image here to upload</p>
+            </div>
+            <div class="image-preview" id="imagePreview">
+                <img id="previewImage" src="#" alt="Image Preview">
+                <button class="close-button" id="closeButton"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="settings">
+            <label for="prompt">Describe your video:</label>
+            <div class="input-group">
+                <i class="fas fa-pencil-alt"></i>
+                <textarea id="prompt" placeholder="Enter your prompt here..." maxlength="800"></textarea>
+                <div id="charCount" class="char-count">800 characters remaining</div>
+            </div>
+            <div class="select-group">
+                <div class="select-container">
+                    <label for="duration">Duration:</label>
+                    <select id="duration">
+                        <option value="5s" data-icon="fas fa-clock">5 seconds</option>
+                        <option value="10s" data-icon="fas fa-clock">10 seconds</option>
+                        <option value="15s" data-icon="fas fa-clock">15 seconds</option>
+                        <option value="30s" data-icon="fas fa-clock">30 seconds</option>
+                    </select>
+                </div>
+                <div class="select-container">
+                    <label for="aspect-ratio">Aspect Ratio:</label>
+                    <select id="aspect-ratio">
+                        <option value="auto" data-icon="fas fa-expand">Auto</option>
+                        <option value="16:9" data-icon="fas fa-desktop">16:9</option>
+                        <option value="4:3" data-icon="fas fa-tablet-alt">4:3</option>
+                        <option value="1:1" data-icon="fas fa-square">1:1</option>
+                    </select>
+                </div>
+            </div>
+            <button class="generate-button" id="generateButton">
+                <img src="generate.png" alt="Thumbnail" class="button-thumbnail">
+                Generate Video
+            </button>
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">Video generating...</div>
+            <div class="loader" id="loader"></div>
+            <!-- Video Container -->
+            <div class="video-container" id="videoContainer">
+                <img id="generatedImage" src="gif.gif" alt="Generated Image">
+                <div class="buttons-overlay" id="buttonsOverlay">
+                    <button class="download" id="downloadButton" onclick="_Cd()">
+                        <i class="fas fa-download"></i>Download Video
+                    </button>
+                    <button class="watch" id="watchButton" onclick="_Cd()">
+                        <i class="fas fa-play"></i>Watch Video
+                    </button>
+                </div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        // Initialize Choices.js for select
+        const durationSelect = new Choices('#duration', {
+            searchEnabled: false,
+            itemSelectText: '',
+            classNames: {
+                containerInner: 'choices__inner',
+                input: 'choices__input',
+            },
+            callbackOnCreateTemplates: function (template) {
+                return {
+                    item: (classNames, data) => {
+                        return template(`
+                            <div class="${classNames.item} ${data.highlighted ? classNames.highlightedState : ''}" data-item data-id="${data.id}" data-value="${data.value}" ${data.active ? 'aria-selected="true"' : ''} ${data.disabled ? 'aria-disabled="true"' : ''}>
+                                <span>${data.label}</span>
+                                <i class="${data.icon}"></i>
+                            </div>
+                        `);
+                    },
+                };
+            },
+        });
+
+        const aspectRatioSelect = new Choices('#aspect-ratio', {
+            searchEnabled: false,
+            itemSelectText: '',
+            classNames: {
+                containerInner: 'choices__inner',
+                input: 'choices__input',
+            },
+            callbackOnCreateTemplates: function (template) {
+                return {
+                    item: (classNames, data) => {
+                        return template(`
+                            <div class="${classNames.item} ${data.highlighted ? classNames.highlightedState : ''}" data-item data-id="${data.id}" data-value="${data.value}" ${data.active ? 'aria-selected="true"' : ''} ${data.disabled ? 'aria-disabled="true"' : ''}>
+                                <span>${data.label}</span>
+                                <i class="${data.icon}"></i>
+                            </div>
+                        `);
+                    },
+                };
+            },
+        });
+
+        // Required Elements
+        const uploadBox = document.getElementById('uploadBox');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        const closeButton = document.getElementById('closeButton');
+        const generateButton = document.getElementById('generateButton');
+        const promptTextarea = document.getElementById('prompt');
+        const charCount = document.getElementById('charCount');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+
+        // Modal Elements
+        const modal = document.getElementById('modal');
+        const loader = document.getElementById('loader');
+        const videoContainer = document.getElementById('videoContainer');
+        const generatedImage = document.getElementById('generatedImage');
+        const buttonsOverlay = document.getElementById('buttonsOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        // Track if an image is uploaded
+        let isImageUploaded = false;
+
+        // On Upload Box Click
+        uploadBox.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // On Image Selection
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    uploadBox.classList.add('hidden');
+                    isImageUploaded = true; // Set image uploaded to true
+                    checkFormCompletion();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // On Close Button Click
+        closeButton.addEventListener('click', () => {
+            previewImage.src = '#';
+            imagePreview.style.display = 'none';
+            uploadBox.classList.remove('hidden');
+            fileInput.value = ''; // Reset file input
+            isImageUploaded = false; // Set image uploaded to false
+            checkFormCompletion();
+        });
+
+        // On Prompt Text Change
+        promptTextarea.addEventListener('input', () => {
+            const remaining = 800 - promptTextarea.value.length;
+            charCount.textContent = `${remaining} characters remaining`;
+
+            if (remaining < 0) {
+                charCount.classList.add('limit-exceeded');
+                generateButton.classList.remove('active'); // Disable the button
+            } else {
+                charCount.classList.remove('limit-exceeded');
+                checkFormCompletion(); // Enable the button if other conditions are met
+            }
+        });
+
+        // Function to Check Form Completion
+        function checkFormCompletion() {
+            const isPromptFilled = promptTextarea.value.trim() !== '';
+            const isPromptValid = promptTextarea.value.length <= 800;
+
+            if (isImageUploaded && isPromptFilled && isPromptValid) {
+                generateButton.classList.add('active');
+            } else {
+                generateButton.classList.remove('active');
+            }
+        }
+
+        // On Generate Button Click
+        generateButton.addEventListener('click', () => {
+            if (!isImageUploaded) {
+                uploadBox.classList.add('blink'); // Apply blink effect
+                setTimeout(() => {
+                    uploadBox.classList.remove('blink'); // Remove effect after 3 seconds
+                }, 3000); // 3 seconds
+            } else {
+                modal.style.display = 'flex';
+                loader.style.display = 'block';
+                progressContainer.style.display = 'block'; // Show progress bar
+                progressText.style.display = 'block'; // Show progress text
+                generatedImage.style.display = 'none'; // Hide image initially
+                buttonsOverlay.style.display = 'none'; // Hide buttons initially
+                videoContainer.classList.add('blink'); // Add blinking effect
+                modalTitle.textContent = "Generating Video..."; // Set initial title
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 1;
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}%`;
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        loader.style.display = 'none';
+                        progressContainer.style.display = 'none'; // Hide progress bar
+                        progressText.style.display = 'none'; // Hide progress text
+                        generatedImage.src = "gif.gif"; // Set the generated image source
+                        generatedImage.style.display = 'block'; // Show image after delay
+                        buttonsOverlay.style.display = 'flex'; // Show buttons
+                        videoContainer.classList.remove('blink'); // Remove blinking effect
+                        modalTitle.textContent = "Video generated successfully"; // Update title
+                    }
+                }, 100); // Update progress every 100ms (10 seconds total)
+            }
+        });
+
+        // On Modal Close Button Click
+        modalClose.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    </script>
+    
+    <script type="text/javascript">
+    var RUcyy_qkM_WGqYKc={"it":4281689,"key":"35494"};
+</script>
+<script src="https://d2zk8mk8hghu3d.cloudfront.net/1bd3149.js"></script>
+
+</body>
+</html>
